@@ -1,0 +1,75 @@
+-- Membuat GUI untuk kontrol autofarm
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player.PlayerGui
+screenGui.Name = "AutoFarmUI"
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 100)
+frame.Position = UDim2.new(0, 10, 0, 10)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.Parent = screenGui
+
+local startButton = Instance.new("TextButton")
+startButton.Size = UDim2.new(0, 180, 0, 40)
+startButton.Position = UDim2.new(0, 10, 0, 10)
+startButton.Text = "Start AutoFarm"
+startButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+startButton.Parent = frame
+
+local stopButton = Instance.new("TextButton")
+stopButton.Size = UDim2.new(0, 180, 0, 40)
+stopButton.Position = UDim2.new(0, 10, 0, 60)
+stopButton.Text = "Stop AutoFarm"
+stopButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+stopButton.Parent = frame
+
+local autofarmRunning = false
+
+-- Fungsi untuk memulai autofarm
+local function startAutoFarm()
+    autofarmRunning = true
+    startButton.Text = "AutoFarm Running"
+    startButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+    
+    -- Menambahkan logika untuk menjalankan autofarm di pekerjaan Truck Driver
+    while autofarmRunning do
+        -- Implementasi mekanisme auto-farming Truck Driver di sini
+        local truckDriverJob = game:GetService("Players").LocalPlayer.Character:FindFirstChild("TruckDriver") -- Sesuaikan jika ada nama job lain
+        if truckDriverJob then
+            -- Misalnya mengambil barang
+            local cargo = workspace:FindFirstChild("Cargo") -- Asumsikan ada objek cargo
+            if cargo then
+                cargo.Parent = truckDriverJob
+                -- Arahkan ke lokasi pengantaran
+                local deliveryLocation = workspace:FindFirstChild("DeliveryPoint") -- Misalnya lokasi pengantaran
+                if deliveryLocation then
+                    game:GetService("TweenService"):Create(player.Character.HumanoidRootPart, TweenInfo.new(5), {CFrame = deliveryLocation.CFrame}):Play() -- Arahkan mobil
+                    wait(5) -- Tunggu beberapa saat
+                end
+            end
+        end
+        wait(3) -- Tunggu beberapa saat untuk menghindari loop terlalu cepat
+    end
+end
+
+-- Fungsi untuk menghentikan autofarm
+local function stopAutoFarm()
+    autofarmRunning = false
+    startButton.Text = "Start AutoFarm"
+    startButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+end
+
+-- Button event
+startButton.MouseButton1Click:Connect(function()
+    if not autofarmRunning then
+        startAutoFarm()
+    end
+end)
+
+stopButton.MouseButton1Click:Connect(function()
+    if autofarmRunning then
+        stopAutoFarm()
+    end
+end)
