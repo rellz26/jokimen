@@ -14,26 +14,26 @@ def execute_script():
         with open("temp_script.lua", "w") as f:
             f.write(script)
         
-        # Eksekusi script menggunakan Named Pipes (Synapse X, Fluxus, dll.)
-        pipe_name = "\\\.\pipe\SynapseX"  # Sesuaikan dengan executor
+        # Eksekusi script menggunakan Named Pipes untuk Vega X
+        pipe_name = "\\.\pipe\VegaX"  # Sesuaikan dengan executor Vega X
         if not os.path.exists(pipe_name):
-            messagebox.showerror("Error", "Executor not running or pipe not found!")
+            messagebox.showerror("Error", "Vega X Executor not running or pipe not found!")
             return
         
         with open(pipe_name, "w") as pipe:
             pipe.write(script)
         
-        messagebox.showinfo("Success", "Script executed successfully!")
+        messagebox.showinfo("Success", "Script executed successfully on Vega X!")
     except Exception as e:
         messagebox.showerror("Error", f"Failed to execute script: {e}")
 
 # UI Setup
 root = tk.Tk()
-root.title("Roblox Script Executor")
+root.title("Roblox Script Executor (Vega X)")
 root.geometry("500x400")
 root.configure(bg='#2c2f33')
 
-title_label = tk.Label(root, text="Roblox Script Executor", font=("Arial", 16, "bold"), fg="white", bg="#2c2f33")
+title_label = tk.Label(root, text="Roblox Script Executor (Vega X)", font=("Arial", 16, "bold"), fg="white", bg="#2c2f33")
 title_label.pack(pady=10)
 
 script_text = scrolledtext.ScrolledText(root, height=10, width=50, font=("Arial", 12))
