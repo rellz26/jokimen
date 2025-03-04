@@ -1,0 +1,15 @@
+import os
+
+print("\nRoblox Script Executor (Vega X)")
+print("[START FARM] - Press Enter to start farming")
+input()  # Menunggu pengguna menekan Enter
+
+script = "-- Lua script for auto farm\nprint('Auto Farm Started')"
+
+pipe_name = r"\\.\pipe\VegaX"  # Sesuaikan dengan executor Vega X
+if not os.path.exists(pipe_name):
+    print("Error: Vega X Executor not running or pipe not found!")
+else:
+    with open(pipe_name, "w") as pipe:
+        pipe.write(script)
+    print("Success: Auto Farm Started on Vega X!")
