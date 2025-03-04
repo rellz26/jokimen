@@ -13,6 +13,9 @@ root.title("Exploit Panel")
 root.geometry("400x300")
 root.configure(bg='#2c2f33')
 
+# Pastikan jendela muncul di tengah layar
+root.eval('tk::PlaceWindow . center')
+
 # Judul
 title_label = tk.Label(root, text="Exploit Panel", font=("Arial", 16, "bold"), fg="white", bg="#2c2f33")
 title_label.pack(pady=10)
@@ -29,4 +32,5 @@ execute_button.pack(pady=10, padx=20, fill='x')
 exit_button = tk.Button(root, text="Exit", font=("Arial", 12), command=root.quit, bg="#f04747", fg="white")
 exit_button.pack(pady=10, padx=20, fill='x')
 
+# Menjalankan loop utama Tkinter
 root.mainloop()
