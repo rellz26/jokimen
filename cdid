@@ -1,42 +1,38 @@
--- Script untuk autofarm truck (di dalam ServerScriptService)
-local truck = game.Workspace.Truck -- Ganti dengan nama truck yang ada di game Anda
-local tujuan = game.Workspace.Tujuan -- Ganti dengan tujuan yang diinginkan
-local speed = 50 -- Kecepatan truck
+using UnityEngine;
+using UnityEngine.UI;
 
--- Fungsi untuk menggerakkan truck
-local function moveTruck()
-    while true do
-        local direction = (tujuan.Position - truck.Position).unit
-        truck.Velocity = direction * speed
-        wait(0.1)
-    end
-end
+public class UIPanelController : MonoBehaviour
+{
+    // Referensi ke panel dan tombol
+    public GameObject panel;  // Panel UI
+    public Button button;     // Tombol UI
 
--- Mulai autofarm setelah pemain mengklik UI
-game.ReplicatedStorage.StartAutofarm.OnServerEvent:Connect(function(player)
-    moveTruck()
-end)
+    void Start()
+    {
+        // Pastikan panel awalnya aktif
+        panel.SetActive(true);
 
--- Script UI Panel untuk mengontrol autofarm truck
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local StartAutofarm = ReplicatedStorage:WaitForChild("StartAutofarm")
+        // Tambahkan listener untuk tombol
+        button.onClick.AddListener(OnButtonClick);
+    }
 
--- Membuat UI Panel
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game.Players.LocalPlayer.PlayerGui
-screenGui.Name = "AutofarmPanel"
+    // Fungsi untuk menangani aksi saat tombol ditekan
+    void OnButtonClick()
+    {
+        // Menutup panel saat tombol ditekan
+        panel.SetActive(false);
+        Debug.Log("Tombol ditekan, panel ditutup!");
+    }
 
--- Membuat tombol Start
-local startButton = Instance.new("TextButton")
-startButton.Parent = screenGui
-startButton.Size = UDim2.new(0, 200, 0, 50)
-startButton.Position = UDim2.new(0.5, -100, 0.5, -25)
-startButton.Text = "Start Autofarm"
-startButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    // Fungsi untuk membuka panel (jika dibutuhkan)
+    public void OpenPanel()
+    {
+        panel.SetActive(true);
+    }
 
--- Fungsi untuk mengirimkan perintah ke server
-startButton.MouseButton1Click:Connect(function()
-    StartAutofarm:FireServer()
-end)
-
-
+    // Fungsi untuk menutup panel (jika dibutuhkan)
+    public void ClosePanel()
+    {
+        panel.SetActive(false);
+    }
+}
