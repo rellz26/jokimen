@@ -1,38 +1,32 @@
-using UnityEngine;
-using UnityEngine.UI;
+import tkinter as tk
+from tkinter import messagebox
 
-public class UIPanelController : MonoBehaviour
-{
-    // Referensi ke panel dan tombol
-    public GameObject panel;  // Panel UI
-    public Button button;     // Tombol UI
+def execute_exploit():
+    messagebox.showinfo("Exploit", "Exploit executed successfully!")
 
-    void Start()
-    {
-        // Pastikan panel awalnya aktif
-        panel.SetActive(true);
+def attach_process():
+    messagebox.showinfo("Attach", "Process attached successfully!")
 
-        // Tambahkan listener untuk tombol
-        button.onClick.AddListener(OnButtonClick);
-    }
+# Membuat jendela utama
+root = tk.Tk()
+root.title("Exploit Panel")
+root.geometry("400x300")
+root.configure(bg='#2c2f33')
 
-    // Fungsi untuk menangani aksi saat tombol ditekan
-    void OnButtonClick()
-    {
-        // Menutup panel saat tombol ditekan
-        panel.SetActive(false);
-        Debug.Log("Tombol ditekan, panel ditutup!");
-    }
+# Judul
+title_label = tk.Label(root, text="Exploit Panel", font=("Arial", 16, "bold"), fg="white", bg="#2c2f33")
+title_label.pack(pady=10)
 
-    // Fungsi untuk membuka panel (jika dibutuhkan)
-    public void OpenPanel()
-    {
-        panel.SetActive(true);
-    }
+# Tombol Attach
+attach_button = tk.Button(root, text="Attach Process", font=("Arial", 12), command=attach_process, bg="#7289da", fg="white")
+attach_button.pack(pady=10, padx=20, fill='x')
 
-    // Fungsi untuk menutup panel (jika dibutuhkan)
-    public void ClosePanel()
-    {
-        panel.SetActive(false);
-    }
-}
+# Tombol Execute
+execute_button = tk.Button(root, text="Execute Exploit", font=("Arial", 12), command=execute_exploit, bg="#43b581", fg="white")
+execute_button.pack(pady=10, padx=20, fill='x')
+
+# Tombol Exit
+exit_button = tk.Button(root, text="Exit", font=("Arial", 12), command=root.quit, bg="#f04747", fg="white")
+exit_button.pack(pady=10, padx=20, fill='x')
+
+root.mainloop()
