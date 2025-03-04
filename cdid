@@ -1,36 +1,48 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import scrolledtext, messagebox
+import os
+import time
 
-def execute_exploit():
-    messagebox.showinfo("Exploit", "Exploit executed successfully!")
+def execute_script():
+    script = script_text.get("1.0", tk.END)
+    if not script.strip():
+        messagebox.showwarning("Warning", "Script is empty!")
+        return
+    
+    try:
+        # Simpan script ke file sementara
+        with open("temp_script.lua", "w") as f:
+            f.write(script)
+        
+        # Eksekusi script menggunakan Named Pipes (Synapse X, Fluxus, dll.)
+        pipe_name = "\\\.\pipe\SynapseX"  # Sesuaikan dengan executor
+        if not os.path.exists(pipe_name):
+            messagebox.showerror("Error", "Executor not running or pipe not found!")
+            return
+        
+        with open(pipe_name, "w") as pipe:
+            pipe.write(script)
+        
+        messagebox.showinfo("Success", "Script executed successfully!")
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to execute script: {e}")
 
-def attach_process():
-    messagebox.showinfo("Attach", "Process attached successfully!")
-
-# Membuat jendela utama
+# UI Setup
 root = tk.Tk()
-root.title("Exploit Panel")
-root.geometry("400x300")
+root.title("Roblox Script Executor")
+root.geometry("500x400")
 root.configure(bg='#2c2f33')
 
-# Pastikan jendela muncul di tengah layar
-root.eval('tk::PlaceWindow . center')
-
-# Judul
-title_label = tk.Label(root, text="Exploit Panel", font=("Arial", 16, "bold"), fg="white", bg="#2c2f33")
+title_label = tk.Label(root, text="Roblox Script Executor", font=("Arial", 16, "bold"), fg="white", bg="#2c2f33")
 title_label.pack(pady=10)
 
-# Tombol Attach
-attach_button = tk.Button(root, text="Attach Process", font=("Arial", 12), command=attach_process, bg="#7289da", fg="white")
-attach_button.pack(pady=10, padx=20, fill='x')
+script_text = scrolledtext.ScrolledText(root, height=10, width=50, font=("Arial", 12))
+script_text.pack(padx=10, pady=10)
 
-# Tombol Execute
-execute_button = tk.Button(root, text="Execute Exploit", font=("Arial", 12), command=execute_exploit, bg="#43b581", fg="white")
+execute_button = tk.Button(root, text="Execute Script", font=("Arial", 12), command=execute_script, bg="#43b581", fg="white")
 execute_button.pack(pady=10, padx=20, fill='x')
 
-# Tombol Exit
 exit_button = tk.Button(root, text="Exit", font=("Arial", 12), command=root.quit, bg="#f04747", fg="white")
 exit_button.pack(pady=10, padx=20, fill='x')
 
-# Menjalankan loop utama Tkinter
 root.mainloop()
