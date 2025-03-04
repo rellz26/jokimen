@@ -1,12 +1,9 @@
-import tkinter as tk
-from tkinter import scrolledtext, messagebox
 import os
-import time
 
 def execute_script():
-    script = script_text.get("1.0", tk.END)
+    script = input("Enter your Lua script: ")
     if not script.strip():
-        messagebox.showwarning("Warning", "Script is empty!")
+        print("Warning: Script is empty!")
         return
     
     try:
@@ -15,34 +12,29 @@ def execute_script():
             f.write(script)
         
         # Eksekusi script menggunakan Named Pipes untuk Vega X
-        pipe_name = "\\.\pipe\VegaX"  # Sesuaikan dengan executor Vega X
+        pipe_name = r"\\.\pipe\VegaX"  # Sesuaikan dengan executor Vega X
         if not os.path.exists(pipe_name):
-            messagebox.showerror("Error", "Vega X Executor not running or pipe not found!")
+            print("Error: Vega X Executor not running or pipe not found!")
             return
         
         with open(pipe_name, "w") as pipe:
             pipe.write(script)
         
-        messagebox.showinfo("Success", "Script executed successfully on Vega X!")
+        print("Success: Script executed successfully on Vega X!")
     except Exception as e:
-        messagebox.showerror("Error", f"Failed to execute script: {e}")
+        print(f"Error: Failed to execute script: {e}")
 
-# UI Setup
-root = tk.Tk()
-root.title("Roblox Script Executor (Vega X)")
-root.geometry("500x400")
-root.configure(bg='#2c2f33')
-
-title_label = tk.Label(root, text="Roblox Script Executor (Vega X)", font=("Arial", 16, "bold"), fg="white", bg="#2c2f33")
-title_label.pack(pady=10)
-
-script_text = scrolledtext.ScrolledText(root, height=10, width=50, font=("Arial", 12))
-script_text.pack(padx=10, pady=10)
-
-execute_button = tk.Button(root, text="Execute Script", font=("Arial", 12), command=execute_script, bg="#43b581", fg="white")
-execute_button.pack(pady=10, padx=20, fill='x')
-
-exit_button = tk.Button(root, text="Exit", font=("Arial", 12), command=root.quit, bg="#f04747", fg="white")
-exit_button.pack(pady=10, padx=20, fill='x')
-
-root.mainloop()
+if __name__ == "__main__":
+    while True:
+        print("\nRoblox Script Executor (Vega X)")
+        print("1. Execute Script")
+        print("2. Exit")
+        choice = input("Choose an option: ")
+        
+        if choice == "1":
+            execute_script()
+        elif choice == "2":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice, please try again.")
