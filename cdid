@@ -1,0 +1,155 @@
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Header = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local CloseButton = Instance.new("TextButton")
+local MinimizeButton = Instance.new("TextButton")
+local UIStroke = Instance.new("UIStroke")
+local UICorner = Instance.new("UICorner")
+local FeatureList = Instance.new("Frame")
+local AutoFarmToggle = Instance.new("TextButton")
+local AutoFarmLabel = Instance.new("TextLabel")
+local Checkbox = Instance.new("Frame")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Parent setup
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+MainFrame.Parent = ScreenGui
+Header.Parent = MainFrame
+Title.Parent = Header
+CloseButton.Parent = Header
+MinimizeButton.Parent = Header
+UIStroke.Parent = MainFrame
+UICorner.Parent = MainFrame
+FeatureList.Parent = MainFrame
+AutoFarmToggle.Parent = FeatureList
+AutoFarmLabel.Parent = AutoFarmToggle
+Checkbox.Parent = AutoFarmToggle
+
+-- MainFrame properties
+MainFrame.Size = UDim2.new(0, 400, 0, 350) -- Memperbesar ukuran UI
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -175)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
+UIStroke.Thickness = 2
+UICorner.CornerRadius = UDim.new(0, 10)
+
+-- Header properties
+Header.Size = UDim2.new(1, 0, 0, 30)
+Header.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Header.BorderSizePixel = 0
+
+-- Title properties
+Title.Size = UDim2.new(1, -60, 1, 0)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.Text = "JUFLING PROJECT"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.BackgroundTransparency = 1
+
+-- CloseButton properties
+CloseButton.Size = UDim2.new(0, 30, 1, 0)
+CloseButton.Position = UDim2.new(1, -30, 0, 0)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 14
+CloseButton.BackgroundTransparency = 1
+
+-- MinimizeButton properties
+MinimizeButton.Size = UDim2.new(0, 30, 1, 0)
+MinimizeButton.Position = UDim2.new(1, -60, 0, 0)
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.TextSize = 14
+MinimizeButton.BackgroundTransparency = 1
+
+-- FeatureList properties
+FeatureList.Size = UDim2.new(1, 0, 1, -30)
+FeatureList.Position = UDim2.new(0, 0, 0, 30)
+FeatureList.BackgroundTransparency = 1
+
+-- AutoFarmToggle properties
+AutoFarmToggle.Size = UDim2.new(1, -20, 0, 30)
+AutoFarmToggle.Position = UDim2.new(0, 10, 0, 10)
+AutoFarmToggle.BackgroundTransparency = 1
+AutoFarmToggle.AutoButtonColor = false
+AutoFarmToggle.Text = ""
+
+-- AutoFarmLabel properties
+AutoFarmLabel.Size = UDim2.new(1, -40, 1, 0)
+AutoFarmLabel.Text = "AutoFarm Truck"
+AutoFarmLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoFarmLabel.Font = Enum.Font.Gotham
+AutoFarmLabel.TextSize = 14
+AutoFarmLabel.TextXAlignment = Enum.TextXAlignment.Left
+AutoFarmLabel.BackgroundTransparency = 1
+
+-- Checkbox properties
+Checkbox.Size = UDim2.new(0, 20, 0, 20)
+Checkbox.Position = UDim2.new(1, -30, 0.5, -10)
+Checkbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Checkbox.BorderSizePixel = 0
+local isChecked = false
+
+-- Minimize Functionality
+local isMinimized = false
+MinimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    FeatureList.Visible = not isMinimized
+    if isMinimized then
+        MainFrame.Size = UDim2.new(0, 400, 0, 30)
+    else
+        MainFrame.Size = UDim2.new(0, 400, 0, 350)
+    end
+end)
+
+-- Fly Move Function
+local function flyTo(position)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = LocalPlayer.Character.HumanoidRootPart
+        local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        local tween = TweenService:Create(humanoidRootPart, tweenInfo, {CFrame = CFrame.new(position)})
+        tween:Play()
+    end
+end
+
+-- AutoFarm Truck Functionality
+local function AutoFarmTruck(state)
+    if state then
+        print("AutoFarm Truck Enabled")
+        -- Fly ke lokasi job
+        flyTo(Vector3.new(100, 5, 200)) -- Ganti dengan koordinat lokasi job
+        wait(3)
+        -- Fly ke lokasi spawn truck
+        flyTo(Vector3.new(300, 5, 400)) -- Ganti dengan koordinat spawn truck
+    else
+        print("AutoFarm Truck Disabled")
+    end
+end
+
+-- Toggle Functionality
+AutoFarmToggle.MouseButton1Click:Connect(function()
+    isChecked = not isChecked
+    if isChecked then
+        Checkbox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        AutoFarmTruck(true)
+    else
+        Checkbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        AutoFarmTruck(false)
+    end
+end)
+
+-- Close Button Functionality
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
