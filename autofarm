@@ -84,6 +84,57 @@ Header.InputChanged:Connect(function(input)
     end
 end)
 
+-- Title properties
+Title.Size = UDim2.new(1, -90, 0, 30)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.Text = "JOKIMPLING HUB BETA VERSION!"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.BackgroundTransparency = 1
+
+-- Subtitle properties
+Subtitle.Size = UDim2.new(1, -90, 0, 20)
+Subtitle.Position = UDim2.new(0, 10, 0, 25)
+Subtitle.Text = "BY JUFLING PROJECT"
+Subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+Subtitle.Font = Enum.Font.Gotham
+Subtitle.TextSize = 12
+Subtitle.TextXAlignment = Enum.TextXAlignment.Left
+Subtitle.BackgroundTransparency = 1
+
+-- CloseButton properties
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -30, 0, 0)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 14
+CloseButton.BackgroundTransparency = 1
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui.Enabled = false
+end)
+
+-- MinimizeButton properties
+MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+MinimizeButton.Position = UDim2.new(1, -70, 0, 0)
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.TextSize = 14
+MinimizeButton.BackgroundTransparency = 1
+local minimized = false
+MinimizeButton.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    MainFrame.Size = minimized and UDim2.new(0, 400, 0, 60) or UDim2.new(0, 400, 0, 350)
+    for _, child in pairs(MainFrame:GetChildren()) do
+        if child ~= Header and child ~= Title and child ~= Subtitle and child ~= MinimizeButton and child ~= CloseButton then
+            child.Visible = not minimized
+        end
+    end
+end)
+
 -- StartButton properties
 StartButton.Size = UDim2.new(0.9, 0, 0, 40)
 StartButton.Position = UDim2.new(0.05, 0, 0, 70)
