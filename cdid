@@ -1,0 +1,159 @@
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Header = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local CloseButton = Instance.new("TextButton")
+local MinimizeButton = Instance.new("TextButton")
+local UIStroke = Instance.new("UIStroke")
+local UICorner = Instance.new("UICorner")
+local FeatureList = Instance.new("Frame")
+local Checkbox = Instance.new("Frame")
+local Checkmark = Instance.new("TextLabel")
+local StartButton = Instance.new("TextButton")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+
+-- Koordinat untuk AutoFarm dan Spawn Truck
+local AutoFarmLocation = Vector3.new(50, 5, 200) -- Ganti dengan koordinat yang benar
+local SpawnTruckLocation = Vector3.new(50, 5, 250) -- Ganti dengan koordinat yang benar
+
+-- Parent setup
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+MainFrame.Parent = ScreenGui
+Header.Parent = MainFrame
+Title.Parent = Header
+CloseButton.Parent = Header
+MinimizeButton.Parent = Header
+UIStroke.Parent = MainFrame
+UICorner.Parent = MainFrame
+FeatureList.Parent = MainFrame
+Checkbox.Parent = FeatureList
+Checkmark.Parent = Checkbox
+StartButton.Parent = MainFrame -- Memindahkan tombol ke bawah header
+
+-- MainFrame properties
+MainFrame.Size = UDim2.new(0, 400, 0, 350) -- Memperbesar ukuran UI
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -175)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
+UIStroke.Thickness = 2
+UICorner.CornerRadius = UDim.new(0, 10)
+MainFrame.Active = true -- Memungkinkan seluruh UI di-drag
+
+-- Header properties
+Header.Size = UDim2.new(1, 0, 0, 60) -- Menambah tinggi header untuk menampung tombol
+Header.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Header.BorderSizePixel = 0
+Header.Active = true
+
+-- Dragging functionality
+local dragging, dragInput, dragStart, startPos
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+Header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Header.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        updateInput(input)
+    end
+end)
+
+-- Title properties
+Title.Size = UDim2.new(1, -90, 0, 30)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.Text = "JOKIMPLING HUB"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.BackgroundTransparency = 1
+
+-- CloseButton properties
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -30, 0, 0)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 14
+CloseButton.BackgroundTransparency = 1
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui.Enabled = false
+end)
+
+-- MinimizeButton properties
+MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+MinimizeButton.Position = UDim2.new(1, -70, 0, 0) -- Menjauhkan dari tombol close
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.TextSize = 14
+MinimizeButton.BackgroundTransparency = 1
+local minimized = false
+MinimizeButton.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    for _, child in pairs(MainFrame:GetChildren()) do
+        if child ~= Header then
+            child.Visible = not minimized
+        end
+    end
+end)
+
+-- StartButton properties
+StartButton.Size = UDim2.new(0, 150, 0, 40)
+StartButton.Position = UDim2.new(0.5, -75, 0, 70) -- Memindahkan tombol ke bawah header
+StartButton.Text = "Start AutoFarm"
+StartButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+StartButton.Font = Enum.Font.GothamBold
+StartButton.TextSize = 16
+StartButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+UICorner:Clone().Parent = StartButton
+
+-- FeatureList properties
+FeatureList.Size = UDim2.new(1, 0, 1, -100)
+FeatureList.Position = UDim2.new(0, 0, 0, 100)
+FeatureList.BackgroundTransparency = 1
+
+local isAutoFarming = false
+local farmConnection
+
+-- AutoFarm Toggle via Start Button
+StartButton.MouseButton1Click:Connect(function()
+    isAutoFarming = not isAutoFarming
+    Checkmark.Visible = isAutoFarming
+    if isAutoFarming then
+        if farmConnection then farmConnection:Disconnect() end
+        farmConnection = RunService.Heartbeat:Connect(function()
+            if isAutoFarming and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(AutoFarmLocation)
+            end
+        end)
+    else
+        if farmConnection then farmConnection:Disconnect() end
+    end
+end)
