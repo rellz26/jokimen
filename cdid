@@ -17,7 +17,7 @@ local TweenService = game:GetService("TweenService")
 local LocalPlayer = Players.LocalPlayer
 
 -- Koordinat untuk AutoFarm
-local AutoFarmLocation = Vector3.new(50, 5, 200)
+local AutoFarmLocation = Vector3.new(-21799.83203125, 1042.65185546875, -26797.654296875)
 
 -- Parent setup
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
